@@ -7,7 +7,6 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <math.h>
 
 int mdc(int a, int b) {
   int temp;
@@ -19,17 +18,35 @@ int mdc(int a, int b) {
   return a;
 }
 
-bool sao_coprimos(int a, int b) { return mdc(a, b) == 1; }
+bool sao_coprimos(int a, int b) {
+  return mdc(a, b) == 1;
+}
 
 bool eh_numero_carmichael(int n) {
-  if (n <= 1 || n % 2 == 0) {
-    return false;
+  if (n <= 2) {
+    return false; 
   }
+
   for (int a = 2; a < n; ++a) {
-    if (sao_coprimos(a, n) && ((long long)pow(a, n - 1) % n) != 1) {
-      return false;
+    if (sao_coprimos(a, n)) {
+      int res = 1;
+      int exp = n - 1;
+      int base = a;
+
+      while (exp > 0) {
+        if (exp % 2 == 1) {
+          res = (res * base) % n;
+        }
+        base = (base * base) % n;
+        exp /= 2;
+      }
+
+      if (res != 1) {
+        return false;
+      }
     }
   }
+
   return true;
 }
 
